@@ -20,7 +20,7 @@ from sklearn.model_selection import train_test_split
 import torch.nn.functional as F
 
 
-def custom_train_test_splitID(grouped_data, encoded_labels,grouped_position=None,grouped_ID = None, test_size=0.16, random_state=None):
+def custom_train_test_splitID(grouped_data, encoded_labels,grouped_position=None,grouped_ID = None, test_size=0.16, random_state=None,val_or_test='val'):
     """
     Custom train-test split for grouped data and labels.
 
@@ -37,7 +37,11 @@ def custom_train_test_splitID(grouped_data, encoded_labels,grouped_position=None
     rally_indices = list(range(len(grouped_data)))
 
     # Split rally indices ### split videos here
-    train_indices, test_indices = train_test_split(rally_indices, test_size=test_size, random_state=random_state)
+    train_full_indices, test_indices = train_test_split(rally_indices, test_size=test_size, random_state=random_state)
+    if val_or_test == 'val':
+        train_indices, test_indices = train_test_split(train_full_indices, test_size=test_size, random_state=random_state)
+    else:
+        train_indices = train_full_indices
 
     # Function to subset data based on indices
     subset_data = lambda data, indices: [data[i] for i in indices]
